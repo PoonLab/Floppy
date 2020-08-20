@@ -71,7 +71,7 @@ if args.output_dir == '':
 else:
     base_name = [args.output_dir + '/' + os.path.splitext(os.path.basename(i))[0] for i in args.vars]
 
-print args.vars
+# print args.vars
 
 tqdmfile = sys.stdout if args.quiet == 0 else os.devnull
 ordinal = lambda n: "%d%s" % (n,"tsnrhtdd"[(n/10%10!=1)*(n%10<4)*n%10::4])
