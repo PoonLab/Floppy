@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
 def pondr(sequence):
     start_url = 'http://www.pondr.com/'
@@ -22,7 +23,10 @@ def pondr(sequence):
     def submit_sequence(sequence, url):
         # create instance of chrome webdriver
         # need to add chromedriver to path, or specify its location here
-        browser = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--headless")  # run headless chrome
+        browser = webdriver.Chrome(options=chrome_options)
 
         # navigate to page
         browser.get(url)

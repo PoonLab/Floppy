@@ -12,7 +12,7 @@ def iupred2(sequence):
     os.system(cmd + " > " + fpath)
     data = ""
 
-    with open(fpath, 'w') as file:
+    with open(fpath, 'r') as file:
         data = file.read()
         file.close()
     os.remove(fpath)
@@ -31,7 +31,7 @@ def spotdis2(sequence):
     os.system(cmd)
     data = ""
 
-    with open(fpath, 'w') as file:
+    with open(fpath, 'r') as file:
         data = file.read()
         file.close()
     os.remove(fpath)

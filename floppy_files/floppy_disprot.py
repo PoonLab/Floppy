@@ -1,11 +1,9 @@
 import time
-import csv
 from selenium import webdriver
-from selenium.webdriver import Chrome
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 from datetime import datetime
 from Bio import SeqIO
 import math
@@ -43,7 +41,10 @@ def disprot(sequence):
 
     def submit_sequence(sequence, url, predictor_name):
         # create instance of chrome webdriver
-        browser = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--headless") # run headless chrome
+        browser = webdriver.Chrome(options = chrome_options)
 
         # navigate to page
         browser.get(url)
