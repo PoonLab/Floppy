@@ -8,7 +8,7 @@ Created on Wed Jul  3 09:53:13 2019
 import tensorflow as tf
 import tqdm,sys,glob,os
 import numpy as np
-import cPickle as pickle
+import pickle
 from datetime import datetime 
 import argparse 
 
