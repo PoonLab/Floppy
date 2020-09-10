@@ -3,8 +3,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+import queue
 
-def pondr(sequence):
+def pondr(sequence, queue):
     start_url = 'http://www.pondr.com/'
     predictors = ['VLXT', 'XL1', 'CAN', 'VL3', 'VSL2'] # list of all the predictors we want to get data from
 
@@ -68,4 +69,5 @@ def pondr(sequence):
 
     predictions = save_results(results)
 
+    queue.put(predictions)
     return predictions

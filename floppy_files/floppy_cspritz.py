@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
 def cspritz(sequence):
     start_url = 'http://protein.bio.unipd.it/cspritz/'
@@ -33,7 +34,11 @@ def cspritz(sequence):
     def submit_sequence(sequence, url, predictor):
         # create instance of chrome webdriver
         # need to add chromedriver to path, or specify its location here
-        browser = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--headless")  # run headless chrome
+        browser = webdriver.Chrome(options=chrome_options)
+
         browser.get(url)
         # fill in form
         Sequence = browser.find_element_by_id('sequence')

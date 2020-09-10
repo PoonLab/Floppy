@@ -3,8 +3,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+import queue
 
-def espritz(sequence):
+def espritz(sequence, queue):
     start_url = 'http://protein.bio.unipd.it/espritz/'
     # list mapping prediction options (for scraper) to what to put in the file name
     predictors_t = [['Xray','X-Ray'], ['Disprot', 'Disprot'], ['NMR', 'NMR']]
@@ -34,7 +36,10 @@ def espritz(sequence):
     def submit_sequence(sequence, url, predictor):
         # create instance of chrome webdriver
         # need to add chromedriver to path, or specify its location here
-        browser = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--headless")  # run headless chrome
+        browser = webdriver.Chrome(options=chrome_options)
         browser.get(url)
         # fill in form
         Sequence = browser.find_element_by_id('sequence')
@@ -72,4 +77,5 @@ def espritz(sequence):
         espritz_total.append(temp_results)
         # time.sleep(60) # wait before running again
 
+    queue.put(espritz_total)
     return espritz_total

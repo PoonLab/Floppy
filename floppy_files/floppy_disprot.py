@@ -41,11 +41,11 @@ def disprot(sequence):
 
     def submit_sequence(sequence, url, predictor_name):
         # create instance of chrome webdriver
-        chrome_options = Options()
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--headless") # run headless chrome
-        browser = webdriver.Chrome(options = chrome_options)
-
+        # chrome_options = Options()
+        # chrome_options.add_argument("--disable-gpu")
+        # chrome_options.add_argument("--headless") # run headless chrome
+        # browser = webdriver.Chrome(options = chrome_options)
+        browser = webdriver.Chrome()
         # navigate to page
         browser.get(url)
 
