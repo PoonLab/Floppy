@@ -1,6 +1,8 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import queue
 
-def pondrfit(sequence):
+def pondrfit(sequence, queue):
     start_url = 'http://original.disprot.org/pondr-fit.php'
     def save_results(results):
         results = results.splitlines() # split by lines into list
@@ -19,8 +21,10 @@ def pondrfit(sequence):
         return results
 
     def submit_sequence(sequence, start_url):
-        # browser = webdriver.Chrome('C:\Users\Galmo\Documents\PoonLab')
-        browser = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--headless")  # run headless chrome
+        browser = webdriver.Chrome(options=chrome_options)
         browser.get(start_url) # navigate to page
         Sequence = browser.find_element_by_name('native_sequence')  # fill in form
 
@@ -35,4 +39,5 @@ def pondrfit(sequence):
 
     predictions = save_results(results)
 
+    queue.put(predictions)
     return predictions
