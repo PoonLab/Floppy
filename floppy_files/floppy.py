@@ -20,7 +20,7 @@ from floppy_iupred import *
 # # Define path to fasta file here:
 # path = "C:\Users\Galmo\Documents\PoonLab\"
 
-def combine(seq):
+def combine(sequence):
     predictors = (iupred, pondr, espritz)
     q = queue.Queue()
     threads = []
@@ -48,7 +48,7 @@ for header, sequence in seqs.items(): #loop through proteins in fasta file - lim
     seq = ">" + header + "\n" + sequence + "\n"
     print(seq)
 
-    combine(sequence)
+    combine(seq)
 
 
     """
