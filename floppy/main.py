@@ -6,7 +6,6 @@ import joblib
 
 from floppy import pondrfit, pondr, cspritz, espritz, iupred
 
-
 def combine(sequence):
     predictors = (iupred, pondr, espritz)
     q = queue.Queue()
@@ -40,7 +39,8 @@ for header, sequence in seqs.items(): #loop through proteins in fasta file - lim
     """
     add iupred and spotdis
     """
-    """
+
+
     q = queue.Queue()
     if __name__ == "__main__":
         # create threads for each predictor
@@ -50,30 +50,15 @@ for header, sequence in seqs.items(): #loop through proteins in fasta file - lim
         # t_disprot = threading.Thread(target=disprot, args= (seq,))
         # t_cspritz = threading.Thread(target=cspritz, args= (seq, q))
         t_espritz = threading.Thread(target=espritz, args= (seq, q))
-
         threads = [t_iupred, t_pondrfit, t_pondr, t_espritz]
         for t in threads:
-            t.start()
-        # pondrfit.start() # start threads
-        # pondrfit.start()
-        # pondr.start()
-        # disprot.start()
-        # cspritz.start()
-        # espritz.start()
-
+            t.start() # start threads
         for t in threads:
             t.join()
-
-        # iupred.join() # wait until all threads finish running
-        # pondrfit.join()
-        # pondr.join()
-        # # disprot.join()
-        # cspritz.join()
-        # espritz.join()
         results = q.get()
         print("Finished collecting data for {}".format(seq))
 
-"""
+
     # protein = pd.DataFrame(
     #             [pondrfit, pondr[0], pondr[1], pondr[2], pondr[3], pondr[4], disprot[0], disprot[1], disprot[2],
     #             disprot[3], cspritz[0], cspritz[1], espritz[0], espritz[1], espritz[2]])
@@ -91,6 +76,5 @@ for header, sequence in seqs.items(): #loop through proteins in fasta file - lim
     #
     # X = protein
     # sequence = sequence_aa
-
+    #
     # predictions = loaded_model.predict(X)
-
