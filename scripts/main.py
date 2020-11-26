@@ -4,7 +4,7 @@ from threading import Thread
 import queue
 import joblib
 
-from floppy import pondrfit, pondr, cspritz, espritz, iupred
+import pondrfit, pondr, cspritz, espritz, iupred
 
 def combine(sequence):
     predictors = (iupred, pondr, espritz)
