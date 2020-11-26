@@ -24,12 +24,21 @@ from sklearn import tree
 import joblib
 import pydotplus
 import collections
+import argparse
+
+
+parser = argparse.ArgumentParser("Random forest classifier on intrinsic disorder predictor outputs")
+parser.add_argument("path", type=str, help="Path to directory containing CSV outputs of wrapper scripts.")
+parser.add_argument("out", type=str, help="Filename to export model as a pickle.", default="disorder_rf.pkl")
+parser.add_argument("--seed", default=211, type=int, help="optional, set random seed.")
+args = parser.parse_args()
+
 pd.set_option('display.max_columns', 500)
-% matplotlib inline
+#% matplotlib inline
 
 # make list of all merged csvs
 files = []
-for path in Path('/home/galmog/Documents/Disorder/Disorder_Data/VirusData/').rglob('DP*.csv'):
+for path in Path(args.path).rglob('DP*.csv'):
     files.append(path)
 
 # drop proteins with missing data / are linearly dependent
@@ -38,8 +47,9 @@ for i, path in enumerate(files):
     protein = pd.read_csv(path)
     protein = protein.drop(protein.columns[[0, 1]], axis=1)
     protein = protein.drop(
-        ['PredictProtein-NORSnet', 'PredictProtein-PROFbval', 'PredictProtein-Ucon', 'PredictProtein-MD_raw'], axis=1,
-        errors='ignore')
+        ['PredictProtein-NORSnet', 'PredictProtein-PROFbval', 'PredictProtein-Ucon',
+         'PredictProtein-MD_raw'],
+        axis=1, errors='ignore')
     proteins.append(protein)
 
 for i, protein in enumerate(proteins):
@@ -48,18 +58,17 @@ for i, protein in enumerate(proteins):
 X = df_total.drop('Disprot Label', axis=1)
 y = df_total['Disprot Label']
 
-#randomly selected seed from the 10 previous runs
-seed = 211
-np.random.seed(211)
+# randomly selected seed from the 10 previous runs
+np.random.seed(args.seed)
 
-sss = StratifiedShuffleSplit(n_splits=1, train_size=0.6, random_state=seed)
+sss = StratifiedShuffleSplit(n_splits=1, train_size=0.6, random_state=args.seed)
 
 for train_index, test_index in sss.split(X, y):
     Xtrain, Xtest = X.loc[train_index], X.loc[test_index]
     ytrain, ytest = y.loc[train_index], y.loc[test_index]
 
 rf_pipeline = Pipeline([
-    ('sampling', SMOTE(random_state=seed)),
+    ('sampling', SMOTE(random_state=args.seed)),
     ('scaler', StandardScaler(with_mean=True, with_std=True)),
     ('rforest', RandomForestClassifier())
 ])
@@ -110,11 +119,10 @@ mcc = round(mcc, 3)
 print('\nModel MCC:', mcc)
 
 # export model
-filename = 'disorder_rf.pkl'
-#pickle.dump(rf_model, open(filename, 'wb'))
-joblib.dump(rf_model, filename)
+# pickle.dump(rf_model, open(filename, 'wb'))
+joblib.dump(rf_model, args.out)
 
-#plot feature importance
+# plot feature importance
 feature_importance = rf_model.feature_importances_
 
 indices = np.argsort(feature_importance)
@@ -125,11 +133,11 @@ plt.barh(pos, feature_importance[indices], align='center')
 plt.yticks(pos, np.array(Xtrain.columns)[indices])
 
 # save fig
-figname = f"{seed}-{mcc}.png"
+figname = f"{args.seed}-{mcc}.png"
 plt.savefig(figname, format='png')
 
 
-#viz decision trees
+# viz decision trees
 estimator1 = rf_model.estimators_[20]
 estimator2 = rf_model.estimators_[40]
 estimator3 = rf_model.estimators_[60]
@@ -155,7 +163,7 @@ for edge in edges1:
 
 graph1.write_png('tree1.png')
 
-#tree 2
+# tree 2
 dot_data2 = tree.export_graphviz(estimator2,
                 feature_names = Xtrain.columns,
                 class_names = ['Ordered', 'Disordered'],
@@ -173,7 +181,7 @@ for edge in edges2:
         dest.set_fillcolor(colours[i])
 graph2.write_png('tree2.png')
 
-#tree 3
+# tree 3
 dot_data3 = tree.export_graphviz(estimator3,
                 feature_names = Xtrain.columns,
                 class_names = ['Ordered', 'Disordered'],
